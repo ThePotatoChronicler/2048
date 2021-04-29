@@ -348,5 +348,5 @@ int main(int argc, char** argv) {
     free(cache);
     free(ecache);
 
-    if (lost) { printf("Good game!\nYour final score is %llu", score); }
+    if (lost) { printf("Good game!\nYour final score is %llu\n", score); }
 }

@@ -10,10 +10,10 @@
 int board_x, board_y, board_size;
 unsigned short color_amount = 0;
 
-int* cache;
-int* ecache;
+int* cache = NULL;
+int* ecache = NULL;
 
-int* board;
+int* board = NULL;
 char* dialog = "Points: "; // Just in case you wanna translate it lol
 unsigned long long score = 0;
 

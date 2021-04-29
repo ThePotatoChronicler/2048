@@ -98,38 +98,17 @@ bool is_loss() { // Resolves if the game is lost
         if (board[i] == 0) { return FALSE; }
     }
 
-    // Look down
+    // Vertical
     for (i = 0; i != (board_y - 1); i++) {
         for (j = 0; j != board_x; j++) {
             if (board[rcindex(i, j)] == board[rcindex(i + 1, j)]) { return FALSE; }
         }
     }
 
-    // Look up
-    for (i = (board_y - 1); i != 0; i--) {
-        for (j = 0; j != board_x; j++) {
-            if (board[rcindex(i, j)] == board[rcindex(i - 1, j)]) { return FALSE; }
-        }
-    }
-
-    /* These throw a warning while compiling,
-     * for supposedly being out of bounds.
-     * I haven't been able to get an error from this
-     * so far, so it's probably a false positive, but
-     * just in case, keep an eye out on this part.
-     */
-
-    // Look right
-    for (i = 0; i != (board_x - 1); i++) {
-        for (j = 0; j != board_y; j++) {
-            if (board[rcindex(j, i)] == board[rcindex(j + 1, i)]) { return FALSE; }
-        }
-    }
-
-    // Look left
-    for (i = (board_x - 1); i != 0; i--) {
-        for (j = 0; j != board_y; j++) {
-            if (board[rcindex(j, i)] == board[rcindex(j - 1, i)]) { return FALSE; }
+    // Horizontal
+    for (i = 0; i != board_y; i++) {
+        for (j = 0; j != (board_x - 1); j++) {
+            if (board[rcindex(i, j + 1)] == board[rcindex(i, j + 1)]) { return FALSE; }
         }
     }
 

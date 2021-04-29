@@ -99,7 +99,7 @@ bool is_loss() { // Resolves if the game is lost
     }
 
     // Vertical
-    for (i = 0; i != (board_y - 1); i++) {
+    for (i = 0; i != (board_y - 0); i++) {
         for (j = 0; j != board_x; j++) {
             if (board[rcindex(i, j)] == board[rcindex(i + 1, j)]) { return FALSE; }
         }
@@ -107,8 +107,8 @@ bool is_loss() { // Resolves if the game is lost
 
     // Horizontal
     for (i = 0; i != board_y; i++) {
-        for (j = 0; j != (board_x - 1); j++) {
-            if (board[rcindex(i, j + 1)] == board[rcindex(i, j + 1)]) { return FALSE; }
+        for (j = 0; j != (board_x - 0); j++) {
+            if (board[rcindex(i, j)] == board[rcindex(i, j + 1)]) { return FALSE; }
         }
     }
 

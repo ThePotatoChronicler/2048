@@ -8,7 +8,7 @@
 #include <math.h>
 #include <signal.h>
 
-int board_x, board_y, board_size;
+int board_x, board_y, board_size, empty_tiles;
 unsigned short color_amount = 0;
 
 int* cache = NULL;
@@ -20,7 +20,7 @@ unsigned long long score = 0;
 
 int randpos() { return rand() % board_size; }
 
-int rcindex(int row, int col) { return row * board_x + col; } // Converts row and column to index
+int rcindex(int row, int col) { return (row * board_x) + col; } // Converts row and column to index
 
 int safeindex (int index) { if ( (index >= 0) && (index < board_size) ) { return index; } else { return -1; } }
 
@@ -95,9 +95,7 @@ bool is_loss() { // Resolves if the game is lost
     // A shortcut, so that it doesn't
     // check everything if these are
     // still empty spaces
-    for (i = 0; i != board_size; i++) {
-        if (board[i] == 0) { return FALSE; }
-    }
+    if (empty_tiles) { return FALSE; }
 
     // Vertical
     for (i = 0; i != (board_y - 1); i++) {
@@ -189,6 +187,7 @@ bool move_block(int r, int c, int dir) { // Moves block at given index in given 
         board[old] = 0;
 
         score += pow(2, board[new]);
+        empty_tiles++;
 
         work = 1;
     }
@@ -260,6 +259,7 @@ int main(int argc, char** argv) {
     if (argc >= 3) { board_y = atoi(argv[2]); }
 
     board_size = board_x * board_y;
+    empty_tiles = board_size;
     if (!(board_size >= 3)) { printf("The board must be atleast 3 tiles big!\n"); exit(1); }
 
     // This should probably change
@@ -280,6 +280,8 @@ int main(int argc, char** argv) {
 
     board[findempty()] = rand24();
     board[findempty()] = rand24();
+
+    empty_tiles -= 2;
 
     signal(SIGINT, interrupt_handle);
     initscr();
@@ -319,8 +321,8 @@ int main(int argc, char** argv) {
 
         // Adds new pieces
 
-        for (i = 0; i != newpieces; i ++) {
-            if ((j = findempty()) != -1) { board[j] = rand24(); }
+        for (i = 0; i != newpieces; i++) {
+            if ((j = findempty()) != -1) { board[j] = rand24(); empty_tiles--; }
             else { break; }
         }
 
@@ -339,5 +341,6 @@ int main(int argc, char** argv) {
 
     release_memory();
 
-    if (lost) { printf("Good game!\nYour final score is %llu\n", score); }
+    if (lost) { printf("Good game!\n"); }
+    printf("Your final score is %llu\n", score);
 }

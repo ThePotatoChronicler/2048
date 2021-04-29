@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <signal.h>
 
 int board_x, board_y, board_size;
 unsigned short color_amount = 0;
@@ -230,6 +231,18 @@ unsigned long game_logic(int dir) { // Does the game's logic. Returns if any mov
     return moves;
 }
 
+void release_memory() {
+    free(board);
+    free(cache);
+    free(ecache);
+}
+
+void interrupt_handle(int signum) {
+    endwin();
+    release_memory();
+    exit(signum);
+}
+
 int main(int argc, char** argv) {
     int i, j, dir, newpieces;
     bool lost = FALSE;
@@ -268,6 +281,7 @@ int main(int argc, char** argv) {
     board[findempty()] = rand24();
     board[findempty()] = rand24();
 
+    signal(SIGINT, interrupt_handle);
     initscr();
     clear();
     start_color();
@@ -323,9 +337,7 @@ int main(int argc, char** argv) {
     }
     endwin(); // Ends it all so it doesn't cripple your terminal
 
-    free(board);
-    free(cache);
-    free(ecache);
+    release_memory();
 
     if (lost) { printf("Good game!\nYour final score is %llu\n", score); }
 }

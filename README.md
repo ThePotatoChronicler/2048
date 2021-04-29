@@ -6,3 +6,5 @@ command line arguments:
 TODO:
 - Better findempty() function.
 - Make game_logic() optimized, by making it skip blocks that don't need moving.
+- Better newpieces equation
+  - Maybe logarithmic or something, I ain't a wizard

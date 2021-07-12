@@ -266,7 +266,7 @@ int main(int argc, char** argv) {
     newpieces = (board_size / 20) + 1;
 
     board = calloc(board_size, sizeof(int)); // This allocates memory
-                                               // and initializes it to 0s
+                                             // and initializes it to 0s
 
     cache = malloc(sizeof(int) * board_size);  // Draw cache
     for (i =0; i != board_size; i++) {
@@ -326,19 +326,18 @@ int main(int argc, char** argv) {
             else { break; }
         }
 
+        draw_board();
+        mvprintw(0, offset, "%llu", score);
+        refresh();
+
         if (is_loss()) {
             lost = TRUE;
             break;
         }
-
-        draw_board();
-
-        mvprintw(0, offset, "%llu", score);
-
-        refresh();
     }
-    endwin(); // Ends it all so it doesn't cripple your terminal
 
+
+    endwin(); // Ends it all so it doesn't cripple your terminal
     release_memory();
 
     if (lost) { printf("Good game!\n"); }

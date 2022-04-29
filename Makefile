@@ -1,9 +1,9 @@
-build: release
-release: main.c
-	gcc main.c -o 2048 -Wall -Wextra -lcurses -lm -Ofast
+CFLAGS := -Wall -Wextra -Werror -O2
+LDFLAGS := -lcurses -lm
 
-debug: main.c
-	gcc main.c -o 2048_debug -Wall -Wextra -lcurses -lm -Og -g
+all: 2048
 
-run: build
-	./2048
+2048: main.c
+	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS)
+
+.PHONY: all

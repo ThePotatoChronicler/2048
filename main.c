@@ -148,7 +148,7 @@ void draw_board() {
         else { sprintf(text, "%i", (int)(pow(2, board[i]))); }
         if ( strlen(text) > size_x ) { sprintf(text, "2^%i", board[i]); }
 
-        mvprintw(off_y + letter_y, off_x + letter_x + (strlen(text) + 1) % 2 - strlen(text) / 2, text);
+        mvaddstr(off_y + letter_y, off_x + letter_x + (strlen(text) + 1) % 2 - strlen(text) / 2, text);
 
         attroff(COLOR_PAIR((board[i] != 0) * ((board[i] - 1) % (color_amount - 1) + 2) + (board[i] == 0)));
 
@@ -287,6 +287,7 @@ int main(int argc, char** argv) {
     initscr();
     clear();
     start_color();
+    use_default_colors();
 
     // Color Init
     color(50, 50, 50, FALSE); // First color is for 0 tiles

@@ -1,4 +1,4 @@
-#include <curses.h>
+#include <ncurses.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -7,6 +7,7 @@
 #include <string.h>
 #include <math.h>
 #include <signal.h>
+#include <errno.h>
 
 int board_x, board_y, board_size, empty_tiles;
 unsigned short color_amount = 0;
@@ -28,6 +29,29 @@ int rand24() { return 1 + (rand() % 2); } // Should return either 1 or 2
 
 bool isempty(int index) { if ( safeindex(index) == -1 ) { return FALSE; } else { return (board[index] == 0); }; }
 
+/* Converts a string safely to a long.
+ * The result is returned in `result`
+ *
+ * Returns -1 if the string isn't a valid number
+ * Returns -2 if the number is out of the range
+ *
+ * If an error occurs, `result` is unchanged
+ *
+ * NOTE: This functions calls strtol, so errno will potentially
+ * change after calling this function!
+ */
+char sstrtol (char *str, long *result, int base) {
+    char *rem;
+
+    errno = 0;
+    long res = strtol(str, &rem, base);
+
+    if (*rem != 0) return -1;
+    if (errno == ERANGE) return -2;
+    *result = res;
+    return 0;
+}
+
 void color(uint8_t r, uint8_t g, uint8_t b, bool black) {
     color_amount++;
     static unsigned int s = 1;
@@ -41,7 +65,7 @@ void color(uint8_t r, uint8_t g, uint8_t b, bool black) {
 int findempty() { // Returns a random empty index, or -1 if there is none
     int i, j, k, swap;
 
-    for (i = 0; i != 200; i++) { // Set the not equal to the amount of permutations
+    for (i = 0; i < 200; i++) {
         j = randpos();
         k = randpos();
         swap = ecache[k];
@@ -255,8 +279,24 @@ int main(int argc, char** argv) {
     board_y = 4;
 
     // Args
-    if (argc >= 2) { board_x = atoi(argv[1]); }
-    if (argc >= 3) { board_y = atoi(argv[2]); }
+    if (argc >= 2) {
+        long res;
+        if (sstrtol(argv[1], &res, 0) == -1) {
+            puts("Board width is not a valid number");
+            exit(1);
+        }
+        board_x = res;
+    }
+    if (argc >= 3) {
+        long res;
+        if (sstrtol(argv[2], &res, 0) == -1) {
+            puts("Board height is not a valid number");
+            exit(1);
+        }
+        board_y = res;
+    }
+    if (board_x < 1) board_x = 1;
+    if (board_y < 1) board_y = 1;
 
     board_size = board_x * board_y;
     empty_tiles = board_size;
@@ -269,7 +309,7 @@ int main(int argc, char** argv) {
                                              // and initializes it to 0s
 
     cache = malloc(sizeof(int) * board_size);  // Draw cache
-    for (i =0; i != board_size; i++) {
+    for (i = 0; i != board_size; i++) {
         cache[i] = -1;
     }
 
@@ -341,6 +381,6 @@ int main(int argc, char** argv) {
     endwin(); // Ends it all so it doesn't cripple your terminal
     release_memory();
 
-    if (lost) { printf("Good game!\n"); }
+    if (lost) { puts("Good game!"); }
     printf("Your final score is %llu\n", score);
 }

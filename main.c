@@ -210,7 +210,7 @@ bool move_block(int r, int c, int dir) { // Moves block at given index in given 
         board[new]++;
         board[old] = 0;
 
-        score += pow(2, board[new]);
+        score += (unsigned long long) pow(2, board[new]);
         empty_tiles++;
 
         work = 1;
